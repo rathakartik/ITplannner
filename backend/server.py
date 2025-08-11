@@ -437,6 +437,7 @@ async def analyze_project(conversation_id: str):
                 id=task_data.get("id", str(uuid.uuid4())),
                 title=task_data.get("title", "Unnamed Task"),
                 description=task_data.get("description", ""),
+                category=task_data.get("category", "General"),
                 acceptance_criteria=task_data.get("acceptance_criteria", []),
                 dependencies=task_data.get("dependencies", []),
                 roles=task_data.get("roles", []),
@@ -444,7 +445,8 @@ async def analyze_project(conversation_id: str):
                 most_likely_days=ml_days,
                 pessimistic_days=pess_days,
                 expected_days=expected_days,
-                risk=task_data.get("risk", "medium")
+                risk=task_data.get("risk", "medium"),
+                priority=task_data.get("priority", "medium")
             )
             
             tasks.append(task)
