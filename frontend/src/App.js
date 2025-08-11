@@ -138,6 +138,19 @@ const App = () => {
     }
   };
 
+  const getFilteredTasks = () => {
+    if (!projectEstimate || !projectEstimate.tasks) return [];
+    
+    if (selectedCategory === "All") {
+      return projectEstimate.tasks;
+    }
+    
+    return projectEstimate.tasks.filter(task => 
+      task.category === selectedCategory || 
+      (task.category && task.category.toLowerCase().includes(selectedCategory.toLowerCase()))
+    );
+  };
+
   const calculateTotalCost = () => {
     if (!projectEstimate) return 0;
     return projectEstimate.tasks.reduce((total, task) => {
