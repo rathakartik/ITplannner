@@ -59,6 +59,7 @@ class TaskEstimate(BaseModel):
     id: str
     title: str
     description: str
+    category: Optional[str] = "General"
     acceptance_criteria: List[str]
     dependencies: List[str]
     roles: List[Dict[str, Any]]
@@ -67,6 +68,7 @@ class TaskEstimate(BaseModel):
     pessimistic_days: float
     expected_days: float
     risk: str = "medium"
+    priority: Optional[str] = "medium"
 
 class ProjectEstimate(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
