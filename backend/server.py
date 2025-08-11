@@ -298,7 +298,7 @@ DEPENDENCY RULES:
 - Testing should follow each development phase
 - Deployment preparation should start mid-project
 
-Be extremely detailed and comprehensive. Include 25-40 tasks for complex projects."""
+Be detailed and comprehensive. Include 15-30 tasks based on project complexity. CRITICAL: Return ONLY the JSON object, no additional text or explanations."""
 
     messages = [
         {
