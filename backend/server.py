@@ -315,10 +315,25 @@ Be extremely detailed and comprehensive. Include 25-40 tasks for complex project
         clean_response = response.strip()
         if clean_response.startswith('```json'):
             clean_response = clean_response.replace('```json', '').replace('```', '').strip()
+        elif clean_response.startswith('```'):
+            clean_response = clean_response.replace('```', '').strip()
+        
+        # Additional cleaning for common JSON issues
+        clean_response = clean_response.replace('\n', ' ').replace('\r', ' ')
+        clean_response = ' '.join(clean_response.split())  # Remove extra whitespace
+        
+        # Try to find JSON content if there's extra text
+        json_start = clean_response.find('{')
+        json_end = clean_response.rfind('}') + 1
+        if json_start >= 0 and json_end > json_start:
+            clean_response = clean_response[json_start:json_end]
         
         parsed_data = json.loads(clean_response)
         return parsed_data
     except json.JSONDecodeError as e:
+        # Log the response for debugging
+        logger.error(f"Failed to parse Groq response. Raw response: {response[:1000]}...")
+        logger.error(f"Cleaned response: {clean_response[:1000]}...")
         raise HTTPException(status_code=500, detail=f"Failed to parse Groq response as JSON: {str(e)}")
 
 # API Routes
