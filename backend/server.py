@@ -153,7 +153,104 @@ def calculate_critical_path(tasks: List[Dict], dependencies: Dict[str, List[str]
 
 async def decompose_project_with_groq(project_data: dict) -> dict:
     """Use Groq to decompose project into tasks"""
-    system_prompt = """You are an expert IT project estimator. Given project inputs, decompose the work into detailed tasks with PERT estimates.
+    system_prompt = """You are an expert IT project estimator with deep knowledge of software development lifecycles. Decompose projects into comprehensive, detailed tasks across ALL development domains.
+
+MANDATORY TASK CATEGORIES TO INCLUDE:
+
+**1. PROJECT PLANNING & ANALYSIS**
+- Requirements gathering and analysis
+- Technical specification documentation
+- Project architecture planning
+- Risk assessment and mitigation planning
+- Resource allocation and team planning
+
+**2. FRONTEND DEVELOPMENT (Detailed)**
+- UI/UX Design System implementation
+- Component library development (reusable components)
+- Responsive design implementation (mobile, tablet, desktop)
+- State management setup (Redux/Context API)
+- API integration and data fetching
+- Form validation and user input handling
+- Client-side routing implementation
+- Performance optimization (lazy loading, code splitting)
+- Cross-browser compatibility testing
+- Accessibility (WCAG 2.1 compliance) implementation
+- Frontend unit and integration testing
+- Progressive Web App (PWA) features if applicable
+
+**3. BACKEND DEVELOPMENT (Detailed)**
+- Database schema design and modeling
+- RESTful API architecture and endpoints
+- Authentication and authorization systems
+- Business logic implementation
+- Data validation and sanitization
+- Error handling and logging systems
+- API rate limiting and throttling
+- File upload and storage management
+- Email/SMS notification systems
+- Background job processing (if needed)
+- API documentation (Swagger/OpenAPI)
+- Backend unit and integration testing
+- Performance optimization and caching
+
+**4. DATABASE DESIGN & MANAGEMENT**
+- Entity relationship design
+- Database schema creation and migrations
+- Index optimization for query performance
+- Database connection pooling setup
+- Data backup and recovery strategies
+- Database security and access controls
+- Data archiving and cleanup procedures
+- Database monitoring and performance tuning
+- Data import/export functionality
+
+**5. SECURITY IMPLEMENTATION**
+- Authentication system (JWT, OAuth, etc.)
+- Authorization and role-based access control
+- Data encryption (at rest and in transit)
+- Input validation and sanitization
+- SQL injection prevention
+- Cross-Site Scripting (XSS) prevention
+- Cross-Site Request Forgery (CSRF) protection
+- Security headers implementation
+- Vulnerability scanning and penetration testing
+- GDPR/compliance requirements implementation
+- Security audit and code review
+
+**6. DEPLOYMENT & DEVOPS**
+- Development environment setup
+- Staging environment configuration
+- Production environment setup
+- CI/CD pipeline implementation
+- Docker containerization
+- Load balancing and auto-scaling setup
+- SSL certificate installation and management
+- Domain and DNS configuration
+- Database backup automation
+- Log aggregation and monitoring setup
+- Performance monitoring and alerting
+- Disaster recovery planning
+- Documentation and runbooks
+
+**7. TESTING & QUALITY ASSURANCE**
+- Test plan development
+- Unit testing implementation
+- Integration testing
+- End-to-end testing
+- Performance testing and load testing
+- Security testing
+- User acceptance testing coordination
+- Bug tracking and resolution
+- Test automation setup
+
+**8. PROJECT MANAGEMENT & DOCUMENTATION**
+- Technical documentation creation
+- User manual and API documentation
+- Deployment documentation
+- Code review processes
+- Version control and branching strategies
+- Knowledge transfer sessions
+- Post-deployment support planning
 
 Return ONLY valid JSON in this exact schema:
 {
@@ -162,28 +259,44 @@ Return ONLY valid JSON in this exact schema:
       "id": "T1",
       "title": "Task name",
       "description": "Detailed description",
-      "acceptance_criteria": ["Criterion 1", "Criterion 2"],
+      "category": "Frontend Development|Backend Development|Database Design|Security|Deployment|Testing|Planning",
+      "acceptance_criteria": ["Criterion 1", "Criterion 2", "Criterion 3"],
       "dependencies": ["T0"],
       "roles": [{"role": "Senior Developer", "hours_optimistic": 40, "hours_most_likely": 80, "hours_pessimistic": 120}],
       "optimistic_days": 5,
       "most_likely_days": 10,
       "pessimistic_days": 20,
-      "risk": "medium"
+      "risk": "low|medium|high",
+      "priority": "high|medium|low"
     }
   ],
   "project_summary": {
     "total_estimated_days": 0,
-    "complexity_assessment": "medium",
-    "key_risks": ["Risk 1", "Risk 2"]
+    "complexity_assessment": "simple|medium|complex",
+    "key_risks": ["Risk 1", "Risk 2"],
+    "recommended_team_size": "3-5 developers",
+    "critical_success_factors": ["Factor 1", "Factor 2"]
   }
 }
 
-Rules:
-- Each task must have realistic O/M/P estimates in days
-- Include all major phases: planning, design, development, testing, deployment
-- Be conservative with estimates
-- Include proper dependencies
-- Focus on deliverable outcomes"""
+ESTIMATION GUIDELINES:
+- Frontend components: 2-8 days per major component
+- API endpoints: 1-3 days per complex endpoint
+- Database tables: 0.5-2 days per table with relationships
+- Authentication system: 5-10 days total
+- Security implementation: 3-15 days depending on requirements
+- Deployment setup: 3-7 days
+- Testing: 20-30% of development time
+- Documentation: 10-15% of development time
+
+DEPENDENCY RULES:
+- Database schema must come before backend development
+- Backend APIs must come before frontend integration
+- Security implementation should be parallel to development
+- Testing should follow each development phase
+- Deployment preparation should start mid-project
+
+Be extremely detailed and comprehensive. Include 25-40 tasks for complex projects."""
 
     messages = [
         {
