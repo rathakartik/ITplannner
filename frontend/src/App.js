@@ -20,6 +20,7 @@ const App = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [projectEstimate, setProjectEstimate] = useState(null);
   const [activeTab, setActiveTab] = useState("chat");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
