@@ -308,13 +308,47 @@ const App = () => {
 
                   <Card>
                     <div className="p-6">
-                      <h4 className="text-lg font-semibold mb-4">Task Breakdown</h4>
+                      <h4 className="text-lg font-semibold mb-4">Task Breakdown by Category</h4>
+                      
+                      {/* Category filters */}
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {['All', 'Frontend Development', 'Backend Development', 'Database Design', 'Security', 'Deployment', 'Testing', 'Planning'].map(category => (
+                          <Button 
+                            key={category}
+                            variant={selectedCategory === category ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedCategory(category)}
+                            className="text-xs"
+                          >
+                            {category}
+                          </Button>
+                        ))}
+                      </div>
+
                       <div className="space-y-4">
-                        {projectEstimate.tasks.map((task, index) => (
-                          <div key={task.id} className="border rounded-lg p-4">
+                        {getFilteredTasks().map((task, index) => (
+                          <div key={task.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                             <div className="flex justify-between items-start mb-3">
                               <div className="flex-1">
-                                <h5 className="font-semibold text-gray-900">{task.title}</h5>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h5 className="font-semibold text-gray-900">{task.title}</h5>
+                                  {task.category && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {task.category}
+                                    </Badge>
+                                  )}
+                                  {task.priority && (
+                                    <Badge 
+                                      className={`text-xs ${
+                                        task.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                        task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-green-100 text-green-800'
+                                      }`}
+                                    >
+                                      {task.priority} priority
+                                    </Badge>
+                                  )}
+                                </div>
                                 <p className="text-sm text-gray-600 mt-1">{task.description}</p>
                               </div>
                               <Badge className={getRiskColor(task.risk)}>{task.risk} risk</Badge>
@@ -339,19 +373,36 @@ const App = () => {
                               </div>
                             </div>
 
-                            {task.dependencies.length > 0 && (
-                              <div className="mb-3">
-                                <span className="text-xs text-gray-500">Dependencies: </span>
-                                {task.dependencies.map(dep => (
-                                  <Badge key={dep} variant="outline" className="mr-1 text-xs">{dep}</Badge>
-                                ))}
-                              </div>
-                            )}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                              {task.dependencies && task.dependencies.length > 0 && (
+                                <div>
+                                  <span className="text-xs text-gray-500 block mb-1">Dependencies:</span>
+                                  <div className="flex flex-wrap gap-1">
+                                    {task.dependencies.map(dep => (
+                                      <Badge key={dep} variant="outline" className="text-xs">{dep}</Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
 
-                            {task.acceptance_criteria.length > 0 && (
+                              {task.roles && task.roles.length > 0 && (
+                                <div>
+                                  <span className="text-xs text-gray-500 block mb-1">Required Roles:</span>
+                                  <div className="flex flex-wrap gap-1">
+                                    {task.roles.map((role, idx) => (
+                                      <Badge key={idx} variant="outline" className="text-xs">
+                                        {role.role} ({role.hours_most_likely || 0}h)
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            {task.acceptance_criteria && task.acceptance_criteria.length > 0 && (
                               <div>
                                 <span className="text-xs text-gray-500 block mb-1">Acceptance Criteria:</span>
-                                <ul className="text-sm text-gray-600 list-disc list-inside">
+                                <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
                                   {task.acceptance_criteria.map((criteria, idx) => (
                                     <li key={idx}>{criteria}</li>
                                   ))}
